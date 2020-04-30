@@ -1,0 +1,7 @@
+eclipse.preferences.version=1
+encoding//src/org/knime/product/headless/messages.properties=ISO-8859-1
+encoding//src/org/knime/product/messages.properties=ISO-8859-1
+encoding//src/org/knime/product/p2/actions/messages.properties=ISO-8859-1
+encoding//src/org/knime/product/p2/messages.properties=ISO-8859-1
+encoding//src/org/knime/product/profiles/messages.properties=ISO-8859-1
+encoding//src/org/knime/product/rcp/intro/json/messages.properties=ISO-8859-1

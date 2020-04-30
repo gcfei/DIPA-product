@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<!-- 
+The intro page supports a special "intro" protocol in links which KNIME handles, e.g. intro://newWorkflow/. The
+actual meaning of the action is implemented in the IntroPage class.
+ -->
+<html>
+<head>
+<base href="/" />
+<link rel="stylesheet" href="css/knime.css" type="text/css" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<script type="text/javascript" src="js/knime.js"> </script>
+<title>Welcome to DIPA Analytics Platform</title>
+</head>
+<body>
+
+	<div id="welcome-page-wrapper">
+		<div id="welcome-page-header">
+			<div class="inner-content">
+				<img src="img/KNIME_logo_gray.svg" height="40" />
+	            <form id="hub-search-bar" action="https://hub.knime.com/search">
+	                <button type="submit" title="Search">
+	                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+	                        <path d="M29.42 28.36l-8.07-8.07a10.76 10.76 0 1 0-1.06 1.06l8.07 8.07zm-16.14-5.87a9.21 9.21 0 1 1 9.21-9.21 9.22 9.22 0 0 1-9.21 9.21z"></path>
+	                    </svg>
+	                </button>
+	                <input type="search" placeholder="Search DIPA Hub for workflows, nodes and more…" autocomplete="off" name="q" />
+	                <button type="reset" style="display:none;">
+	                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+	                        <path d="M27.53 5.53l-1.06-1.06L16 14.94 5.53 4.47 4.47 5.53 14.94 16 4.47 26.47l1.06 1.06L16 17.06l10.47 10.47 1.06-1.06L17.06 16 27.53 5.53z"></path>
+	                    </svg>
+	                </button>
+	                <input type="hidden" name="src" value="knimeapp" />
+	            </form>
+            </div>
+		</div>
+		<div id="inner-welcome-page">
+			<div id="title-wrapper">
+				<div id="welcome-container" class="inner-content">
+					<h1 id="welcome-knime">Welcome</h1>
+					<!-- <h2 id="welcome-sub"></h2> -->
+				</div>
+			</div>
+			<div id="content-container">
+                <div id="carousel-container" class="inner-content">
+                    <div id="carousel-content">
+                        <div class="carousel-tile light">
+                            <div class="image-placeholder placeholder"> </div>
+                            <div class="content">
+                                <div class="title-placeholder placeholder line0"> </div>
+                                <div class="title-placeholder placeholder line1"> </div>
+                                <div class="title-placeholder placeholder line2"> </div>
+                                <div class="button-placeholder">
+                                    <div class="button-text-placeholder placeholder"> </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="carousel-tile light">
+                            <div class="image-placeholder placeholder"> </div>
+                            <div class="content">
+                                <div class="title-placeholder placeholder line0"> </div>
+                                <div class="title-placeholder placeholder line1"> </div>
+                                <div class="title-placeholder placeholder line2"> </div>
+                                <div class="button-placeholder">
+                                    <div class="button-text-placeholder placeholder"> </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="carousel-tile light">
+                            <div class="image-placeholder placeholder"> </div>
+                            <div class="content">
+                                <div class="title-placeholder placeholder line0"> </div>
+                                <div class="title-placeholder placeholder line1"> </div>
+                                <div class="title-placeholder placeholder line2"> </div>
+                                <div class="button-placeholder">
+                                    <div class="button-text-placeholder placeholder"> </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+		</div>
+	</div>
+</body>
+</html>

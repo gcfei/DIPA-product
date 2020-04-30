@@ -1,0 +1,138 @@
+/*
+ * ------------------------------------------------------------------------
+ *
+ *  Copyright by KNIME AG, Zurich, Switzerland
+ *  Website: http://www.knime.com; Email: contact@knime.com
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License, Version 3, as
+ *  published by the Free Software Foundation.
+ *
+ *  This program is distributed in the hope that it will be useful, but
+ *  WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, see <http://www.gnu.org/licenses>.
+ *
+ *  Additional permission under GNU GPL version 3 section 7:
+ *
+ *  KNIME interoperates with ECLIPSE solely via ECLIPSE's plug-in APIs.
+ *  Hence, KNIME and ECLIPSE are both independent programs and are not
+ *  derived from each other. Should, however, the interpretation of the
+ *  GNU GPL Version 3 ("License") under any applicable laws result in
+ *  KNIME and ECLIPSE being a combined program, KNIME AG herewith grants
+ *  you the additional permission to use and propagate KNIME together with
+ *  ECLIPSE with only the license terms in place for ECLIPSE applying to
+ *  ECLIPSE and the GNU GPL Version 3 applying for KNIME, provided the
+ *  license terms of ECLIPSE themselves allow for the respective use and
+ *  propagation of ECLIPSE together with KNIME.
+ *
+ *  Additional permission relating to nodes for KNIME that extend the Node
+ *  Extension (and in particular that are based on subclasses of NodeModel,
+ *  NodeDialog, and NodeView) and that only interoperate with KNIME through
+ *  standard APIs ("Nodes"):
+ *  Nodes are deemed to be separate and independent programs and to not be
+ *  covered works.  Notwithstanding anything to the contrary in the
+ *  License, the License does not apply to Nodes, you are not required to
+ *  license Nodes under the License, and you are granted a license to
+ *  prepare and propagate Nodes, in each case even if such Nodes are
+ *  propagated with or for interoperation with KNIME.  The owner of a Node
+ *  may freely choose the license terms applicable to such Node, including
+ *  when such Node is propagated with or for interoperation with KNIME.
+ * ---------------------------------------------------------------------
+ *
+ * History
+ *   Oct 2, 2019 (Daniel Bogenrieder): created
+ */
+package org.knime.product.rcp.intro;
+
+import java.io.File;
+import java.util.concurrent.locks.ReentrantLock;
+
+import org.eclipse.swt.browser.Browser;
+import org.eclipse.swt.widgets.Display;
+import org.knime.core.node.NodeLogger;
+
+/**
+ * Abstract base class for all updaters (JS) that modify the intro page.
+ *
+ * @author Daniel Bogenrieder, KNIME AG, Zurich, Switzerland
+ * @since 4.1
+ */
+abstract class AbstractUpdater extends AbstractIntroPageModifier implements Runnable {
+
+    private final NodeLogger LOGGER = NodeLogger.getLogger(getClass());
+    private final ReentrantLock m_introFileLock;
+
+    /**
+     * Creates a new updater.
+     *
+     * @param introPageFile the intro page file in the temporary directory
+     * @param introFileLock lock for the intro file
+     */
+    protected AbstractUpdater(final File introPageFile, final ReentrantLock introFileLock) {
+        super(introPageFile);
+        m_introFileLock = introFileLock;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public final void run() {
+        try {
+            prepareData();
+            m_introFileLock.lock();
+            try {
+                updateData();
+            } finally {
+                m_introFileLock.unlock();
+            }
+        } catch (Exception ex) {
+            LOGGER.warn(Messages.getString("AbstractUpdater.0") + ex.getMessage(), ex); //$NON-NLS-1$
+        }
+    }
+
+    protected void executeUpdateInBrowser(final String jsCall) {
+        Browser browser = findIntroPageBrowser();
+        if (browser != null) {
+            Display.getDefault().asyncExec(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        //try for a couple of calls till the script is executed successfully
+                        //isn't always the case on the first call maybe because page loading isn't done, yet
+                        //see AP-13094
+                        int i = 0;
+                        while (!browser.execute(jsCall) && i < 10) {
+                            Thread.sleep(100);
+                            i++;
+                        }
+                    } catch (Exception e) {
+                        LOGGER.info(Messages.getString("AbstractUpdater.1") + e.getMessage(), e); //$NON-NLS-1$
+                    }
+                }
+            });
+        }
+    }
+
+    /**
+     * Method that is called before the intro page is locked and read. Subclasses may retrieve remote information to
+     * perform other longer-runnning tasks for acquiring information to be injected into the page. The default
+     * implementation does nothing.
+     *
+     * @throws Exception if an error occurs
+     */
+    protected void prepareData() throws Exception {
+
+    }
+
+    /**
+     * Modifies the given intro page document and updates data.
+     *
+     * @throws Exception if an error occurs
+     */
+    protected abstract void updateData() throws Exception;
+}
